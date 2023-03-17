@@ -1,0 +1,26 @@
+version: '3.1'
+
+services:
+  openconnect-proxy:
+    container_name: mgm-dad-proxy
+    build: ./tinyproxy-openconnect
+    privileged: true
+    env_file:
+      - .env
+
+  tinyproxy-only:
+    container_name: no-proxy
+    build: ./tinyproxy-only
+    env_file:
+      - .env
+
+  nginx:
+    container_name: load-balancer
+    build: ./nginx
+    env_file:
+      - .env
+    ports:
+      - 8888:8888
+    depends_on:
+      - openconnect-proxy
+      - tinyproxy-only
